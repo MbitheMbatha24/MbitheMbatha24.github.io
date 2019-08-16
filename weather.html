@@ -1,0 +1,121 @@
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>IP2 | Weather</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <nav>
+        <ul>
+            <li> <a href="index.html">Home</a> </li>
+            <li> <a href="author.html">Author</a> </li>
+            <li> <a href="geojson.html">GeoJSON</a> </li>
+            <li> <a href="earthquake.html">Earthquake Mapping</a> </li>
+            <li> <a href="weather.html">Weather</a> </li>
+            <li> <a href="mapping.html">Mapping</a> </li>
+        </ul>
+    </nav>
+
+    <div class="content">
+        <h1>Weather Info</h1>
+        <div class="container">
+            <div class="form-container">
+                <div id="formTitlecontainer">
+                    <p>Fill the form to generate weather data.</p>
+                </div>
+                <form action="" method="post" id="getDataform">
+                    <label for="placeName">Enter location name</label>
+                    <input type="text" id="placeName" placeholder="Place Name">
+                    <div id="button-container">
+                        <button type="button" id="getPlaceInfo">Get Info</button>
+                    </div>
+                    <hr>
+
+                    <label for="placeName">Enter location coordinates</label>
+                    <input type="text" id="lat" placeholder="Latitude">
+                    <input type="text" id="lng" placeholder="Longitude">
+                    <div id="button-container">
+                        <button type="button" id="getCordInfo">Get Info</button>
+                    </div>
+
+                </form>
+
+                <hr>
+
+                <div id='container'>
+                    <!-- On our web page, show a link to the earthquake data. This is just for learning purposes. -->
+                    <div id="weatherImage"></div>
+                    <div id="weatherInfo"></div>
+                    <div id="feedColumn">
+                        <div id="feedSelector"></div>
+                    </div>
+                </div>
+
+
+            </div>
+
+        </div>
+    </div>
+    <script>
+        $(document).ready(function () {
+            var placeName;
+            var lng;
+            var lat;
+
+            function getWeatherInfo(place) {
+                // You need to use the FREE signup at https://www.apixu.com/ to get a key for the Weather URL below
+                //theURL = 'http://api.apixu.com/v1/current.json?key=09b505312e3d4a9581494939191608&q=' + lat.toFixed(4) + ',' + lng.toFixed(4);
+                theURL = 'http://api.apixu.com/v1/current.json?key=09b505312e3d4a9581494939191608&q=' + place;
+                $.ajax({
+                    url: theURL,
+                    success: function (data) {
+                        image = new Image();
+                        if (data.error) {
+                            image.src = "http://via.placeholder.com/64x64?text=%20"; // Error, so we use blank image for weather. See 'error:' below for another way to include a small blank image
+                        }
+                        else {
+                            image.src = "http:" + data.current.condition.icon; // icon is specified within the data
+
+                            $('#weatherInfo').html('<p>' + data.current.condition.text + '</p>'); // current weather in text format
+                        }
+                        image.onload = function () {
+                            $('#weatherImage').empty().append(image);
+                        };
+
+                    },
+                    error: function () { // Weather service could not provide weather for requested lat,lon world location
+                        image = new Image();
+                        // A local 64*64 transparent image. Generated from the useful site: http://png-pixel.com/
+                        image.src = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAQAAAAAYLlVAAAAPElEQVR42u3OMQEAAAgDIJfc6BpjDyQgt1MVAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBgXbgARTAX8ECcrkoAAAAAElFTkSuQmCC";
+                        image.onload = function () {
+                            //set the image into the web page
+                            $('#weatherImage').empty().append(image);
+                        };
+                    }
+                });
+            }
+
+            $('#getPlaceInfo').click(function(){
+                placeName = $('#placeName').val();
+                getWeatherInfo(placeName);
+            });
+
+            $('#getCordInfo').click(function(){
+                lat = $('#lat').val();
+                lng = $('#lng').val();
+
+                var coord = parseFloat(lat) + ',' + parseFloat(lng);
+                getWeatherInfo(coord);
+            });
+
+        });
+
+    </script>
+</body>
+
+</html>

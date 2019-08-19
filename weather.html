@@ -70,7 +70,7 @@
             function getWeatherInfo(place) {
                 // You need to use the FREE signup at https://www.apixu.com/ to get a key for the Weather URL below
                 //theURL = 'http://api.apixu.com/v1/current.json?key=09b505312e3d4a9581494939191608&q=' + lat.toFixed(4) + ',' + lng.toFixed(4);
-                theURL = 'http://api.apixu.com/v1/current.json?key=09b505312e3d4a9581494939191608&q=' + place;
+                theURL = 'https://api.apixu.com/v1/current.json?key=09b505312e3d4a9581494939191608&q=' + place;
                 $.ajax({
                     url: theURL,
                     success: function (data) {
